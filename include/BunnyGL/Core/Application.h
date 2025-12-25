@@ -3,6 +3,10 @@
 #include <string>
 #include <memory>
 
+#include "BunnyGL/Renderer/Renderer.h"
+#include "BunnyGL/Renderer/VertexArray.h"
+#include "BunnyGL/Renderer/Shader.h"
+
 typedef struct GLFWwindow GLFWwindow;
 /**
  * @namespace BunnyGL
@@ -62,6 +66,10 @@ namespace BunnyGL {
         // engine logic from being accidentally copied.
         Application(const Application&) = delete;
         Application& operator=(const Application&) = delete;
+
+        // Store the rendering resources here
+        std::shared_ptr<Shader> m_Shader;
+        std::shared_ptr<VertexArray> m_VertexArray;
     };
 
 }

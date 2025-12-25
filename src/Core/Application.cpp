@@ -3,6 +3,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <BunnyGL/Renderer/Renderer.h>
+#include <BunnyGL/Renderer/RenderCommand.h>
+#include <glm/glm.hpp>
+
 namespace BunnyGL {
 
     Application::Application(const std::string& name, uint32_t width, uint32_t height)
@@ -51,24 +55,103 @@ namespace BunnyGL {
         BGL_CORE_INFO("Renderer: ", glGetString(GL_RENDERER));
         BGL_CORE_INFO("Version:  ", glGetString(GL_VERSION));
 
+        // =======================================================
+        // NEW: RENDERER INTEGRATION STARTS HERE
+        // =======================================================
+
+        // 1. Initialize Renderer (Enables Depth Test, Blending, etc.)
+        Renderer::Init();
+
+        // 2. Create a Triangle
+        // Define Vertices (Position X, Y, Z)
+        float vertices[3 * 3] = {
+            -0.5f, -0.5f, 0.0f, // Bottom Left
+             0.5f, -0.5f, 0.0f, // Bottom Right
+             0.0f,  0.5f, 0.0f  // Top Center
+        };
+
+        // Define Indices (Connect the dots)
+        uint32_t indices[3] = { 0, 1, 2 };
+
+        // 3. Setup Vertex Array (The Container)
+        m_VertexArray.reset(new VertexArray());
+
+        // 4. Setup Vertex Buffer (The Data)
+        std::shared_ptr<VertexBuffer> vertexBuffer;
+        vertexBuffer.reset(new VertexBuffer(vertices, sizeof(vertices)));
+
+        // 5. Define Layout (How the data looks)
+        BufferLayout layout = {
+            { ShaderDataType::Float3, "a_Position" }
+        };
+        vertexBuffer->SetLayout(layout);
+        m_VertexArray->AddVertexBuffer(vertexBuffer);
+
+        // 6. Setup Index Buffer
+        std::shared_ptr<IndexBuffer> indexBuffer;
+        indexBuffer.reset(new IndexBuffer(indices, 3));
+        m_VertexArray->SetIndexBuffer(indexBuffer);
+
+        // 7. Create Shader
+        // Note: You can load from file or use a string for testing
+        std::string vertexSrc = R"(
+            #version 330 core
+            layout(location = 0) in vec3 a_Position;
+            uniform mat4 u_ViewProjection;
+            uniform mat4 u_Transform;
+            void main() {
+                gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
+            }
+        )";
+
+        std::string fragmentSrc = R"(
+            #version 330 core
+            layout(location = 0) out vec4 color;
+            void main() {
+                color = vec4(0.8, 0.2, 0.3, 1.0); // Red color
+            }
+        )";
+
+        m_Shader.reset(new Shader("TriangleShader", vertexSrc, fragmentSrc));
+
         return true;
     }
 
-    void Application::Run() {
-        if (!m_Window) return;
+ void Application::Run() {
+         if (!m_Window) return;
 
-        while (m_Running) {
-            if (glfwWindowShouldClose(m_Window))
-                m_Running = false;
+         while (m_Running) {
+             if (glfwWindowShouldClose(m_Window))
+                 m_Running = false;
 
-            // Render Commands
-            glClearColor(0.1f, 0.1f, 0.12f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+             // =======================================================
+             // NEW: RENDER LOOP
+             // =======================================================
 
-            glfwSwapBuffers(m_Window);
-            glfwPollEvents();
-        }
-    }
+             // 1. clear command
+             RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+             RenderCommand::Clear();
+
+             // 2. Create a dummy camera (Identity matrix for now)
+             // Since we are drawing coordinates between -1 and 1, Identity works fine.
+             glm::mat4 cameraViewProj = glm::mat4(1.0f);
+
+             // 3. Begin Scene
+             Renderer::BeginScene(cameraViewProj);
+
+             // 4. Submit Geometry
+             Renderer::Submit(m_Shader, m_VertexArray);
+
+             // 5. End Scene
+             Renderer::EndScene();
+
+             // =======================================================
+
+             glfwSwapBuffers(m_Window);
+             glfwPollEvents();
+         }
+     }
+
 
     void Application::Shutdown() {
         if (m_Window) {
