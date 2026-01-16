@@ -13,11 +13,14 @@ MyOpenGLProject/
 ├── CMakeLists.txt
 ├── src/
 │   ├── main.cpp
-│   └── glad.c         # Downloaded from the GLAD webservice
-├── include/
-│   └── glad/          # Downloaded from the GLAD webservice
+│   └── glad.c     
+├── external/
+│   └── glad/         
 │       └── glad.h
-
+│   └── glm
+│   └── KHR
+├── include/
+│   └── h headerss
 
 1. How CMake Works (The 3-Step Process)
 Think of CMake as a translator. It takes your high-level instructions and translates them into a language your compiler understands.
@@ -35,6 +38,7 @@ find_package(),A powerful command that searches your computer for an installed l
 
 cmake -B build
 cmake --build build
+./build/BunnyGL
 
 
 
@@ -70,4 +74,20 @@ Buffer Swap: glfwSwapBuffers.
 │       └── Shader.cpp
 └── resources/
 └── shaders/
+
+
+
+
+
+
+src/
+├── Core/
+│   ├── Window.cpp/h
+│   └── Application.cpp/h
+├── Renderer/
+│   ├── Shader.cpp/h
+│   ├── VertexBuffer.cpp/h
+│   ├── IndexBuffer.cpp/h
+│   └── VertexArray.cpp/h
+└── main.cpp
 

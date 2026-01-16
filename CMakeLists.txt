@@ -41,4 +41,4 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 # --- 6. (Optional) Copy Shaders to Build Folder ---
 # This ensures your program can find your .glsl files when running
-file(COPY resources DESTINATION ${CMAKE_BINARY_DIR})
+# --- file(COPY resources DESTINATION ${CMAKE_BINARY_DIR})
