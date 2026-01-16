@@ -97,10 +97,7 @@ namespace BunnyGL {
         template<typename T, typename... Args>
         static void printArgs(T first, Args... rest) {
             std::cout << first;
-            if constexpr(sizeof...(rest) > 0) {
-                std::cout << " ";
-                printArgs(rest...);
-            }
+            printArgs(rest...);
         }
     };
 
