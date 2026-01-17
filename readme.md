@@ -39,10 +39,8 @@ find_package(),A powerful command that searches your computer for an installed l
 cmake -B build
 cmake --build build
 ./build/BunnyGL
+rm -rf build
 
-
-
-In a professional OpenGL project, you move away from "one-off" drawing commands and toward a Data-Oriented approach. You don't want to think about "How do I draw this cube?" but rather "How do I submit this batch of data to the GPU?"
 
 
 5. The "Render Loop" Logic
@@ -55,39 +53,4 @@ Set Uniforms (Camera matrices).
 Call mesh.Draw().
 Buffer Swap: glfwSwapBuffers.
 
-
-
-
-.
-├── CMakeLists.txt
-├── include/
-│   └── BunnyGL/           <-- "BunnyGL" folder inside include
-│       ├── Core/
-│       │   └── Window.h
-│       └── Renderer/
-│           └── Shader.h
-├── src/
-│   ├── glad.c
-│   ├── Core/
-│   │   └── Window.cpp
-│   └── Renderer/
-│       └── Shader.cpp
-└── resources/
-└── shaders/
-
-
-
-
-
-
-src/
-├── Core/
-│   ├── Window.cpp/h
-│   └── Application.cpp/h
-├── Renderer/
-│   ├── Shader.cpp/h
-│   ├── VertexBuffer.cpp/h
-│   ├── IndexBuffer.cpp/h
-│   └── VertexArray.cpp/h
-└── main.cpp
-
+   

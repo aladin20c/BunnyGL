@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 project(BunnyGL LANGUAGES C CXX)
 
+
 # Standard C++ version
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -15,6 +16,16 @@ FetchContent_Declare(
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(glfw)
+
+
+# --- Fetch GLM ---
+FetchContent_Declare(
+  glm
+  GIT_REPOSITORY https://github.com/g-truc/glm.git
+  GIT_TAG        1.0.1  # Using a stable version tag
+  GIT_SHALLOW    TRUE   # Downloads only the necessary files, faster
+)
+FetchContent_MakeAvailable(glm)
 
 # --- 2. Organize Source Files ---
 # file(GLOB_RECURSE ...) searches all subfolders in /src for .cpp files.
@@ -36,8 +47,11 @@ find_package(OpenGL REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE
     glfw
     OpenGL::GL
+    glm::glm
     ${CMAKE_DL_LIBS}
 )
+
+
 
 # --- 6. (Optional) Copy Shaders to Build Folder ---
 # This ensures your program can find your .glsl files when running
