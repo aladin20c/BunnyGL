@@ -1,6 +1,7 @@
 #include <BunnyGL/Core/Log.hpp>
 #include <BunnyGL/Core/Application.hpp>
-#include <BunnyGL/Scene/Scene.hpp>
+#include <BunnyGL/Scene/TriangleScene.hpp>
+#include <BunnyGL/Scene/PlanetScene.hpp>
 #include <memory>
 
 int main() {
@@ -10,7 +11,7 @@ int main() {
     BunnyGL::Application app;
     
     // Create and set scene
-    auto scene = std::make_unique<BunnyGL::Scene>();
+    auto scene = std::make_unique<BunnyGL::PlanetScene>();
     app.SetScene(std::move(scene));
     
     // Run main loop
